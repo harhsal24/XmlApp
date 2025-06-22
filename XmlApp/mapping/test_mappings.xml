@@ -36,4 +36,5 @@
 		<UAD_Xpath>/REPORT/PROPERTYS/PROPERTY[@ValuationUseType='SubjectProperty']/address/city</UAD_Xpath>
 		<ACI_TagName>city</ACI_TagName>
 	</common>
+
 </mappings>

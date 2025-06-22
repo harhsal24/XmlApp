@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<duplicates>
+  <common>
+    <UAD_Xpath>/REPORT/PROPERTYS/PROPERTY[@ValuationUseType='SalesComparable']/valuation/date</UAD_Xpath>
+    <ACI_Tag>ValDate1</ACI_Tag>
+  </common>
+  <common>
+    <UAD_Xpath>/REPORT/PROPERTYS/PROPERTY[@ValuationUseType='Subject']/address/street</UAD_Xpath>
+    <ACI_Tag>Street1</ACI_Tag>
+  </common>
+</duplicates>

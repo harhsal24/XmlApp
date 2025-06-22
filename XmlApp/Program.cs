@@ -10,7 +10,6 @@ class Program
 {
     static void Main(string[] args)
     {
-        // Determine project root (where Program.cs is located)
         string projectRoot = Directory.GetCurrentDirectory();
         if (!Directory.Exists(Path.Combine(projectRoot, "xmls")))
         {
@@ -33,7 +32,8 @@ class Program
         var outputDir = Path.Combine(projectRoot, "output");
         Directory.CreateDirectory(outputDir);
 
-        bool doExtract = false, doReorder = false;
+        bool doExtract = false, doReorder = false, doFindDuplicates = false;
+
         if (args.Length > 0)
         {
             foreach (var arg in args)
@@ -42,19 +42,23 @@ class Program
                     doExtract = true;
                 if (arg.Equals("reorder", StringComparison.OrdinalIgnoreCase))
                     doReorder = true;
+                if (arg.Equals("duplicates", StringComparison.OrdinalIgnoreCase))
+                    doFindDuplicates = true;
             }
         }
         else
         {
             Console.WriteLine("Choose operation:");
-            Console.WriteLine("1. extract  (generate ordered leaf-path files from xmls/)");
-            Console.WriteLine("2. reorder  (reorder mapping files in mapping/ using ordered-xpaths.txt)");
-            Console.WriteLine("3. both");
-            Console.Write("Enter 1, 2, or 3: ");
+            Console.WriteLine("1. extract      (generate ordered leaf-path files from xmls/)");
+            Console.WriteLine("2. reorder      (reorder mapping files in mapping/ using ordered-xpaths.txt)");
+            Console.WriteLine("3. both extract & reorder");
+            Console.WriteLine("4. find-duplicates  (find duplicate mappings in mapping/)");
+            Console.Write("Enter 1, 2, 3, or 4: ");
             var choice = Console.ReadLine();
             if (choice == "1") doExtract = true;
             else if (choice == "2") doReorder = true;
             else if (choice == "3") { doExtract = doReorder = true; }
+            else if (choice == "4") doFindDuplicates = true;
             else
             {
                 Console.WriteLine("Invalid choice. Exiting.");
@@ -68,13 +72,12 @@ class Program
         if (doReorder)
             ReorderMappings(mappingDir, xmlDir, outputDir);
 
+        if (doFindDuplicates)
+            FindDuplicateMappings(mappingDir, outputDir);
+
         Console.WriteLine("Done.");
     }
 
-    /// <summary>
-    /// Extracts ordered leaf-node XPaths from all XML files in xmlDir,
-    /// and for any path containing “[1]” also emits the same path without “[1]”.
-    /// </summary>
     static void ExtractLeafPaths(string xmlDir, string outputDir)
     {
         if (!Directory.Exists(xmlDir))
@@ -96,7 +99,6 @@ class Program
             XDocument xdoc;
             try
             {
-                // Read raw text and strip duplicate xmlns:xlink declarations
                 string xmlText = File.ReadAllText(file);
                 var matches = Regex.Matches(xmlText, @"xmlns:xlink=""[^""]+""");
                 if (matches.Count > 1)
@@ -112,20 +114,16 @@ class Program
                 continue;
             }
 
-            // 1) Traverse to collect all leaf XPaths
             var paths = new List<string>();
             Traverse(xdoc.Root, "", paths);
 
-            // 2) Build an extended list: for each path containing “[1]”, add both with and without “[1]”
             var extended = new List<string>();
             foreach (var p in paths)
             {
                 if (p.Contains("[1]"))
                 {
-                    // first the version without "[1]"
                     var noIndex = Regex.Replace(p, @"\[\s*1\s*\]", "");
                     extended.Add(noIndex);
-                    // then the original [1]-indexed path
                     extended.Add(p);
                 }
                 else
@@ -134,7 +132,6 @@ class Program
                 }
             }
 
-            // 3) Write out the extended list
             var outPath = Path.Combine(outputDir,
                 Path.GetFileNameWithoutExtension(file) + "_ordered_leaf_paths.txt");
             using (var writer = new StreamWriter(outPath))
@@ -146,14 +143,11 @@ class Program
         }
     }
 
-    /// <summary>
-    /// Reorders mapping files by xlink:label sections with start/end comments and per-label missing notices.
-    /// </summary>
     static void ReorderMappings(string mappingDir, string xmlDir, string outputDir)
     {
-        // 1) load ordered-xpaths.txt
         var orderedPaths = File.ReadAllLines(Path.Combine(mappingDir, "ordered-xpaths.txt"))
-            .Select(line => {
+            .Select(line =>
+            {
                 var t = line.Trim();
                 var idx = t.IndexOf(' ');
                 return (idx > 0 && int.TryParse(t.Substring(0, idx).TrimEnd('.'), out _))
@@ -163,12 +157,10 @@ class Program
             .Where(p => !string.IsNullOrEmpty(p))
             .ToList();
 
-        // 2) load the first source XML to evaluate labels
         var srcFile = Directory.GetFiles(xmlDir, "*.xml").First();
         var srcDoc = XDocument.Load(srcFile);
         XNamespace xl = "http://www.w3.org/1999/xlink";
 
-        // 3) build a map: rawXPath → xlink:label
         var pathToLabel = new Dictionary<string, string>();
         foreach (var raw in orderedPaths)
         {
@@ -181,10 +173,7 @@ class Program
                     continue;
                 }
                 var prop = elem.Ancestors("PROPERTY").FirstOrDefault();
-                if (prop == null)
-                    pathToLabel[raw] = "Unknown";
-                else
-                    pathToLabel[raw] = (string)prop.Attribute(xl + "label") ?? "SubjectProperty";
+                pathToLabel[raw] = prop?.Attribute(xl + "label")?.Value ?? "SubjectProperty";
             }
             catch
             {
@@ -192,21 +181,18 @@ class Program
             }
         }
 
-        // 4) determine distinct labels in document order
         var labelsInOrder = orderedPaths
             .Select(p => pathToLabel[p])
             .Where(l => l != null)
             .Distinct()
             .ToList();
 
-        // 5) process each mapping file
         foreach (var mapFile in Directory.GetFiles(mappingDir, "*.xml"))
         {
             Console.WriteLine($"[Reorder] {Path.GetFileName(mapFile)}");
             var mapDoc = XDocument.Load(mapFile);
             var commons = mapDoc.Root.Elements("common").ToList();
 
-            // build lookup: normalized xpath → queue of <common>
             var lookup = new Dictionary<string, Queue<XElement>>(StringComparer.OrdinalIgnoreCase);
             foreach (var c in commons)
             {
@@ -220,14 +206,12 @@ class Program
 
             var newRoot = new XElement("mappings");
 
-            // emit one section per label
             foreach (var label in labelsInOrder)
             {
                 newRoot.Add(new XComment($" === {label} start === "));
-
-                // get all ordered paths for this label
                 var myPaths = orderedPaths.Where(p => pathToLabel[p] == label);
                 bool any = false;
+
                 foreach (var raw in myPaths)
                 {
                     var norm = NormalizePath(raw);
@@ -243,11 +227,9 @@ class Program
 
                 if (!any)
                     newRoot.Add(new XComment($" (no mappings found for {label}) "));
-
                 newRoot.Add(new XComment($" === {label} end === "));
             }
 
-            // leftovers
             var leftovers = lookup.Values.SelectMany(q => q).ToList();
             if (leftovers.Any())
             {
@@ -257,14 +239,12 @@ class Program
                 newRoot.Add(new XComment(" === End of Unmatched mappings === "));
             }
 
-            // save
             var outFile = Path.Combine(outputDir, "reordered-" + Path.GetFileName(mapFile));
             new XDocument(newRoot).Save(outFile);
             Console.WriteLine($"  → {Path.GetFileName(outFile)}");
         }
     }
 
-    // Recursively build XPaths to leaf elements, including PROPERTY predicates and sibling indices
     static void Traverse(XElement element, string currentPath, List<string> result)
     {
         string name = element.Name.LocalName;
@@ -272,7 +252,6 @@ class Program
         string pred = isProp ? $"[@ValuationUseType='{element.Attribute("ValuationUseType").Value}']" : "";
         string segment = name + pred;
 
-        // sibling index
         string idxSuffix = "";
         var parent = element.Parent;
         if (parent != null)
@@ -306,7 +285,47 @@ class Program
             Traverse(child, pathHere, result);
     }
 
-    // Strip numeric indices [1], [2], … but preserve attribute predicates
     static string NormalizePath(string path)
         => Regex.Replace(path, @"\[\s*\d+\s*\]", "").Trim();
+
+    static void FindDuplicateMappings(string mappingDir, string outputDir)
+    {
+        Console.WriteLine("[Duplicates] Scanning for duplicate mappings...");
+
+        foreach (var mapFile in Directory.GetFiles(mappingDir, "*.xml"))
+        {
+            var doc = XDocument.Load(mapFile);
+            var commons = doc.Root.Elements("common").ToList();
+
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var duplicates = new List<XElement>();
+
+            foreach (var c in commons)
+            {
+                var xpath = c.Element("UAD_Xpath")?.Value?.Trim();
+                var tag = c.Element("ACI_Tag")?.Value?.Trim();
+
+                if (string.IsNullOrEmpty(xpath) || string.IsNullOrEmpty(tag))
+                    continue;
+
+                string key = NormalizePath(xpath) + "|" + tag.ToLowerInvariant().Trim();
+
+                if (!seen.Add(key))
+                {
+                    duplicates.Add(new XElement(c));
+                }
+            }
+
+            if (duplicates.Any())
+            {
+                string outFile = Path.Combine(outputDir, "duplicates-" + Path.GetFileName(mapFile));
+                new XDocument(new XElement("duplicates", duplicates)).Save(outFile);
+                Console.WriteLine($"  Found {duplicates.Count} duplicates → {Path.GetFileName(outFile)}");
+            }
+            else
+            {
+                Console.WriteLine($"  No duplicates found in {Path.GetFileName(mapFile)}");
+            }
+        }
+    }
 }
