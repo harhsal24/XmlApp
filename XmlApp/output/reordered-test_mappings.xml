@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<mappings>
+  <!-- === SubjectProperty start === -->
+  <common>
+    <UAD_Xpath>/REPORT/PROPERTYS/PROPERTY[@ValuationUseType='SubjectProperty']/valuation/value</UAD_Xpath>
+    <ACI_TagName>value</ACI_TagName>
+  </common>
+  <!-- === SubjectProperty end === -->
+  <!-- === PROPERTY_SALESCOMP1 start === -->
+  <common>
+    <UAD_Xpath>/REPORT/PROPERTYS/PROPERTY[@ValuationUseType='SalesComparable']/valuation/date</UAD_Xpath>
+    <ACI_TagName>date</ACI_TagName>
+  </common>
+  <!-- === PROPERTY_SALESCOMP1 end === -->
+  <!-- === PROPERTY_SALESCOMP2 start === -->
+  <!-- (no mappings found for PROPERTY_SALESCOMP2) -->
+  <!-- === PROPERTY_SALESCOMP2 end === -->
+  <!-- === PROPERTY_SALESCOMP3 start === -->
+  <!-- (no mappings found for PROPERTY_SALESCOMP3) -->
+  <!-- === PROPERTY_SALESCOMP3 end === -->
+  <!-- === PROPERTY_LandComp1 start === -->
+  <common>
+    <UAD_Xpath>/REPORT/PROPERTYS/PROPERTY[@ValuationUseType='LandComparable'][1]/land/lotNumber</UAD_Xpath>
+    <ACI_TagName>lotNumber</ACI_TagName>
+  </common>
+  <common>
+    <UAD_Xpath>/REPORT/PROPERTYS/PROPERTY[@ValuationUseType='LandComparable'][3]/land/parcels/parcel[2]/area</UAD_Xpath>
+    <ACI_TagName>area</ACI_TagName>
+  </common>
+  <!-- === PROPERTY_LandComp1 end === -->
+  <!-- === PROPERTY_LandComp2 start === -->
+  <!-- (no mappings found for PROPERTY_LandComp2) -->
+  <!-- === PROPERTY_LandComp2 end === -->
+  <!-- === PROPERTY_LandComp3 start === -->
+  <!-- (no mappings found for PROPERTY_LandComp3) -->
+  <!-- === PROPERTY_LandComp3 end === -->
+  <!-- === PROPERTY_RENT_COMP1 start === -->
+  <common>
+    <UAD_Xpath>/REPORT/PROPERTYS/PROPERTY[@ValuationUseType='RentalComparable'][1]/rental/unitType</UAD_Xpath>
+    <ACI_TagName>unitType</ACI_TagName>
+  </common>
+  <common>
+    <UAD_Xpath>/REPORT/PROPERTYS/PROPERTY[@ValuationUseType='RentalComparable']/rental/monthlyRent</UAD_Xpath>
+    <ACI_TagName>monthlyRent</ACI_TagName>
+  </common>
+  <!-- === PROPERTY_RENT_COMP1 end === -->
+  <!-- === PROPERTY_RENT_COMP2 start === -->
+  <!-- (no mappings found for PROPERTY_RENT_COMP2) -->
+  <!-- === PROPERTY_RENT_COMP2 end === -->
+  <!-- === PROPERTY_RENT_COMP3 start === -->
+  <!-- (no mappings found for PROPERTY_RENT_COMP3) -->
+  <!-- === PROPERTY_RENT_COMP3 end === -->
+  <!-- === Unmatched mappings === -->
+  <common>
+    <UAD_Xpath>/REPORT/PROPERTYS/PROPERTY[@ValuationUseType='SalesComparable'][2]/address/city</UAD_Xpath>
+    <ACI_TagName>city</ACI_TagName>
+  </common>
+  <common>
+    <UAD_Xpath>/REPORT/PROPERTYS/PROPERTY[@ValuationUseType='SalesComparable'][1]/address/street</UAD_Xpath>
+    <ACI_TagName>street</ACI_TagName>
+  </common>
+  <common>
+    <UAD_Xpath>/REPORT/PROPERTYS/PROPERTY[@ValuationUseType='SubjectProperty']/address/city</UAD_Xpath>
+    <ACI_TagName>city</ACI_TagName>
+  </common>
+  <!-- === End of Unmatched mappings === -->
+</mappings>

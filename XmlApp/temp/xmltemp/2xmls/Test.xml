@@ -1,0 +1,140 @@
+﻿<REPORT xmlns:xlink="http://www.w3.org/1999/xlink">
+	<!-- Subject Property -->
+	<PROPERTY ValuationUseType="SubjectProperty">
+		<address>
+			<street>123 Main St</street>
+			<city>Springfield</city>
+			<postalCode>12345</postalCode>
+			<coordinates>
+				<latitude>39.799</latitude>
+				<longitude>-89.644</longitude>
+			</coordinates>
+		</address>
+		<valuation>
+			<value>350000</value>
+			<date>2025-06-01</date>
+			<details>
+				<appraiser>
+					<name>John Doe</name>
+					<certificateNumber>ABC123</certificateNumber>
+				</appraiser>
+				<notes>
+					<note>Requires interior inspection.</note>
+					<note>Check foundation recently repaired.</note>
+				</notes>
+			</details>
+		</valuation>
+	</PROPERTY>
+
+	<!-- Sales Comparables -->
+	<PROPERTY xlink:label="PROPERTY_SALESCOMP1" ValuationUseType="SalesComparable">
+		<address>
+			<street>456 Oak Ave</street>
+			<city>Springfield</city>
+			<postalCode>12346</postalCode>
+		</address>
+		<valuation>
+			<value>340000</value>
+			<date>2025-05-15</date>
+		</valuation>
+	</PROPERTY>
+	<PROPERTY xlink:label="PROPERTY_SALESCOMP2" ValuationUseType="SalesComparable">
+		<address>
+			<street>789 Pine Rd</street>
+			<city>Springfield</city>
+			<postalCode>12347</postalCode>
+		</address>
+		<valuation>
+			<value>355000</value>
+			<date>2025-04-20</date>
+			<details>
+				<saleAgent>
+					<name>Jane Smith</name>
+					<agency>Top Real Estate</agency>
+				</saleAgent>
+			</details>
+		</valuation>
+		<amenities>
+			<amenity>Pool</amenity>
+			<amenity>Garage</amenity>
+		</amenities>
+	</PROPERTY>
+	<PROPERTY xlink:label="PROPERTY_SALESCOMP3" ValuationUseType="SalesComparable">
+		<address>
+			<street>321 Elm St</street>
+			<city>Springfield</city>
+			<postalCode>12348</postalCode>
+		</address>
+		<valuation>
+			<value>345000</value>
+			<date>2025-05-10</date>
+			<inspections>
+				<inspection>
+					<date>2025-04-01</date>
+					<type>Roof</type>
+				</inspection>
+				<inspection>
+					<date>2025-04-15</date>
+					<type>Foundation</type>
+				</inspection>
+			</inspections>
+		</valuation>
+	</PROPERTY>
+
+	<!-- Land Comparables -->
+	<PROPERTY xlink:label="PROPERTY_LANDCOMP1" ValuationUseType="LandComparable">
+		<land>
+			<lotNumber>Lot 12A</lotNumber>
+			<parcels>
+				<parcel>
+					<id>A-1</id>
+					<area>2500</area>
+				</parcel>
+				<parcel>
+					<id>A-2</id>
+					<area>2600</area>
+				</parcel>
+			</parcels>
+		</land>
+	</PROPERTY>
+	<PROPERTY xlink:label="PROPERTY_LANDCOMP2" ValuationUseType="LandComparable">
+		<land>
+			<lotNumber>Lot 15B</lotNumber>
+			<parcels>
+				<parcel>
+					<id>B-1</id>
+					<area>3000</area>
+				</parcel>
+			</parcels>
+		</land>
+		<notes>
+			<note>Septic system noted on parcel B-1.</note>
+		</notes>
+	</PROPERTY>
+
+	<!-- Rental Comparables -->
+	<PROPERTY xlink:label="" ValuationUseType="RentalComparable">
+		<rental>
+			<unitType>2BHK</unitType>
+			<monthlyRent>1800</monthlyRent>
+			<leaseDetails>
+				<lease>
+					<tenantName>Mark Turner</tenantName>
+					<startDate>2025-01-01</startDate>
+				</lease>
+				<lease>
+					<tenantName>Emily Davis</tenantName>
+					<startDate>2024-06-01</startDate>
+				</lease>
+			</leaseDetails>
+		</rental>
+	</PROPERTY>
+	<PROPERTY xlink:label="PROPERTY_RENT_COMP2" ValuationUseType="RentalComparable">
+		<rental>
+			<unitType>3BHK</unitType>
+			<monthlyRent>1900</monthlyRent>
+		</rental>
+	</PROPERTY>
+
+
+</REPORT>

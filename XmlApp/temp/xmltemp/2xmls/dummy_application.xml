@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<application>
+  <applicant>
+    <fullName>Alice Johnson</fullName>
+    <age>30</age>
+    <contactDetails>
+      <email>alice@example.com</email>
+      <phoneNumbers>
+        <phoneNumber type="mobile">123-456-7890</phoneNumber>
+        <phoneNumber type="home">098-765-4321</phoneNumber>
+      </phoneNumbers>
+    </contactDetails>
+    <addresses>
+      <address>
+        <addressType>Home</addressType>
+        <city>Springfield</city>
+        <postalCode>12345</postalCode>
+      </address>
+      <address>
+        <addressType>Work</addressType>
+        <city>Capital City</city>
+        <postalCode>67890</postalCode>
+      </address>
+    </addresses>
+  </applicant>
+  <employmentDetails>
+    <currentEmployer>
+      <companyName>Acme Corp</companyName>
+      <position>Software Engineer</position>
+      <startDate>2022-01-15</startDate>
+    </currentEmployer>
+    <previousEmployers>
+      <employer>
+        <companyName>Globex</companyName>
+        <position>Intern</position>
+        <startDate>2020-06-01</startDate>
+        <endDate>2021-06-01</endDate>
+      </employer>
+    </previousEmployers>
+  </employmentDetails>
+</application>

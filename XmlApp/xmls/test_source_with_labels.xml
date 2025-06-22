@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<REPORT xmlns:xlink="http://www.w3.org/1999/xlink">
+	<PROPERTYS>
+		<!-- SubjectProperty -->
+		<PROPERTY ValuationUseType="SubjectProperty">
+			<addresses>
+				<address>
+					<street>100 Subject St</street>
+					<city>SubjectCity</city>
+				</address>
+				<address>
+					<street>100 Subject St, Apt 2B</street>
+					<city>SubjectCity</city>
+				</address>
+			</addresses>
+			<valuation>
+				<value>500000</value>
+				<date>2025-01-01</date>
+			</valuation>
+		</PROPERTY>
+
+		<!-- SalesComparable 1 -->
+		<PROPERTY xlink:label="PROPERTY_SALESCOMP1" ValuationUseType="SalesComparable">
+			<addresses>
+				<address>
+					<street>101 Sales St</street>
+					<city>SaleCity1</city>
+				</address>
+				<address>
+					<street>101 Sales St, Unit A</street>
+					<city>SaleCity1</city>
+				</address>
+			</addresses>
+			<valuation>
+				<value>481000</value>
+				<date>2025-02-01</date>
+			</valuation>
+		</PROPERTY>
+
+		<!-- SalesComparable 2 -->
+		<PROPERTY xlink:label="PROPERTY_SALESCOMP2" ValuationUseType="SalesComparable">
+			<addresses>
+				<address>
+					<street>102 Sales St</street>
+					<city>SaleCity2</city>
+				</address>
+				<address>
+					<street>102 Sales St, Unit B</street>
+					<city>SaleCity2</city>
+				</address>
+			</addresses>
+			<valuation>
+				<value>482000</value>
+				<date>2025-03-01</date>
+			</valuation>
+		</PROPERTY>
+
+		<!-- SalesComparable 3 -->
+		<PROPERTY xlink:label="PROPERTY_SALESCOMP3" ValuationUseType="SalesComparable">
+			<addresses>
+				<address>
+					<street>103 Sales St</street>
+					<city>SaleCity3</city>
+				</address>
+				<address>
+					<street>103 Sales St, Suite 5</street>
+					<city>SaleCity3</city>
+				</address>
+			</addresses>
+			<valuation>
+				<value>483000</value>
+				<date>2025-04-01</date>
+			</valuation>
+		</PROPERTY>
+
+		<!-- LandComparable 1 -->
+		<PROPERTY xlink:label="PROPERTY_LandComp1" ValuationUseType="LandComparable">
+			<addresses>
+				<address>
+					<street>Lot1 Access Rd</street>
+					<city>LandCity1</city>
+				</address>
+				<address>
+					<street>Lot1 Access Rd, Gate A</street>
+					<city>LandCity1</city>
+				</address>
+			</addresses>
+			<land>
+				<lotNumber>Lot1</lotNumber>
+				<parcels>
+					<parcel>
+						<id>L1-1</id>
+						<area>3500</area>
+					</parcel>
+				</parcels>
+			</land>
+			<notes>
+				<note>Note for LandComparable 1</note>
+			</notes>
+		</PROPERTY>
+
+		<!-- LandComparable 2 -->
+		<PROPERTY xlink:label="PROPERTY_LandComp2" ValuationUseType="LandComparable">
+			<addresses>
+				<address>
+					<street>Lot2 Access Rd</street>
+					<city>LandCity2</city>
+				</address>
+				<address>
+					<street>Lot2 Access Rd, Gate B</street>
+					<city>LandCity2</city>
+				</address>
+			</addresses>
+			<land>
+				<lotNumber>Lot2</lotNumber>
+				<parcels>
+					<parcel>
+						<id>L2-1</id>
+						<area>4000</area>
+					</parcel>
+				</parcels>
+			</land>
+			<notes>
+				<note>Note for LandComparable 2</note>
+			</notes>
+		</PROPERTY>
+
+		<!-- LandComparable 3 -->
+		<PROPERTY xlink:label="PROPERTY_LandComp3" ValuationUseType="LandComparable">
+			<addresses>
+				<address>
+					<street>Lot3 Access Rd</street>
+					<city>LandCity3</city>
+				</address>
+				<address>
+					<street>Lot3 Access Rd, Gate C</street>
+					<city>LandCity3</city>
+				</address>
+			</addresses>
+			<land>
+				<lotNumber>Lot3</lotNumber>
+				<parcels>
+					<parcel>
+						<id>L3-1</id>
+						<area>4000</area>
+					</parcel>
+					<parcel>
+						<id>L3-2</id>
+						<area>4500</area>
+					</parcel>
+				</parcels>
+			</land>
+			<notes>
+				<note>Note for LandComparable 3</note>
+			</notes>
+		</PROPERTY>
+
+		<!-- RentalComparable 1 -->
+		<PROPERTY xlink:label="PROPERTY_RENT_COMP1" ValuationUseType="RentalComparable">
+			<addresses>
+				<address>
+					<street>201 Rent Blvd</street>
+					<city>RentCity1</city>
+				</address>
+				<address>
+					<street>201 Rent Blvd, Apt 12</street>
+					<city>RentCity1</city>
+				</address>
+			</addresses>
+			<rental>
+				<unitType>2BHK</unitType>
+				<monthlyRent>1700</monthlyRent>
+				<leaseDetails>
+					<lease>
+						<tenantName>Tenant1</tenantName>
+						<startDate>2024-06-01</startDate>
+					</lease>
+				</leaseDetails>
+			</rental>
+		</PROPERTY>
+
+		<!-- RentalComparable 2 -->
+		<PROPERTY xlink:label="PROPERTY_RENT_COMP2" ValuationUseType="RentalComparable">
+			<addresses>
+				<address>
+					<street>202 Rent Blvd</street>
+					<city>RentCity2</city>
+				</address>
+				<address>
+					<street>202 Rent Blvd, Apt 22</street>
+					<city>RentCity2</city>
+				</address>
+			</addresses>
+			<rental>
+				<unitType>3BHK</unitType>
+				<monthlyRent>1900</monthlyRent>
+			</rental>
+		</PROPERTY>
+
+		<!-- RentalComparable 3 -->
+		<PROPERTY xlink:label="PROPERTY_RENT_COMP3" ValuationUseType="RentalComparable">
+			<addresses>
+				<address>
+					<street>203 Rent Blvd</street>
+					<city>RentCity3</city>
+				</address>
+				<address>
+					<street>203 Rent Blvd, Apt 32</street>
+					<city>RentCity3</city>
+				</address>
+			</addresses>
+			<rental>
+				<unitType>4BHK</unitType>
+				<monthlyRent>2100</monthlyRent>
+			</rental>
+		</PROPERTY>
+
+	</PROPERTYS>
+</REPORT>

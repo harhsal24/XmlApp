@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='utf-8'?>
+<REPORT xmlns:xlink="http://www.w3.org/1999/xlink">
+  <PROPERTY ValuationUseType="SubjectProperty">
+    <address>
+      <street>308 Maple Blvd</street>
+      <city>Rivertown</city>
+      <postalCode>19734</postalCode>
+      <coordinates>
+        <latitude>-22.939665</latitude>
+        <longitude>-51.662164</longitude>
+      </coordinates>
+    </address>
+    <valuation>
+      <value>332362</value>
+      <date>2025-03-09</date>
+      <details>
+        <appraiser>
+          <name>Mark Smith</name>
+          <certificateNumber>FCF0C8</certificateNumber>
+        </appraiser>
+        <notes>
+          <note>Verify zoning compliance.</note>
+          <note>Requires interior inspection.</note>
+          <note>Check foundation recently repaired.</note>
+        </notes>
+      </details>
+    </valuation>
+  </PROPERTY>
+  <PROPERTY xlink:label="PROPERTY_SALESCOMP1" ValuationUseType="SalesComparable">
+    <address>
+      <street>215 Cedar Ln</street>
+      <city>Lakeside</city>
+      <postalCode>72007</postalCode>
+    </address>
+    <valuation>
+      <value>318384</value>
+      <date>2024-07-01</date>
+      <inspections>
+        <inspection>
+          <date>2024-10-13</date>
+          <type>Roof</type>
+        </inspection>
+        <inspection>
+          <date>2025-04-11</date>
+          <type>Foundation</type>
+        </inspection>
+      </inspections>
+    </valuation>
+  </PROPERTY>
+  <PROPERTY xlink:label="PROPERTY_SALESCOMP2" ValuationUseType="SalesComparable">
+    <address>
+      <street>124 Pine Rd</street>
+      <city>Hillview</city>
+      <postalCode>99983</postalCode>
+    </address>
+    <valuation>
+      <value>379625</value>
+      <date>2025-02-22</date>
+    </valuation>
+  </PROPERTY>
+  <PROPERTY xlink:label="PROPERTY_SALESCOMP3" ValuationUseType="SalesComparable">
+    <address>
+      <street>849 Elm St</street>
+      <city>Lakeside</city>
+      <postalCode>91653</postalCode>
+    </address>
+    <valuation>
+      <value>446818</value>
+      <date>2024-06-22</date>
+      <details>
+        <saleAgent>
+          <name>Luke Miller</name>
+          <agency>HomeFinders</agency>
+        </saleAgent>
+      </details>
+    </valuation>
+  </PROPERTY>
+  <PROPERTY xlink:label="PROPERTY_LandComp1" ValuationUseType="LandComparable">
+    <land>
+      <lotNumber>Lot 13C</lotNumber>
+      <parcels>
+        <parcel>
+          <id>B-2</id>
+          <area>5644</area>
+        </parcel>
+        <parcel>
+          <id>D-8</id>
+          <area>4127</area>
+        </parcel>
+      </parcels>
+    </land>
+    <notes>
+      <note>Check soil quality.</note>
+    </notes>
+  </PROPERTY>
+  <PROPERTY xlink:label="PROPERTY_LandComp2" ValuationUseType="LandComparable">
+    <land>
+      <lotNumber>Lot 4B</lotNumber>
+      <parcels>
+        <parcel>
+          <id>B-8</id>
+          <area>7660</area>
+        </parcel>
+        <parcel>
+          <id>C-7</id>
+          <area>2216</area>
+        </parcel>
+        <parcel>
+          <id>C-2</id>
+          <area>9822</area>
+        </parcel>
+      </parcels>
+    </land>
+  </PROPERTY>
+  <PROPERTY xlink:label="PROPERTY_LandComp3" ValuationUseType="LandComparable">
+    <land>
+      <lotNumber>Lot 28A</lotNumber>
+      <parcels>
+        <parcel>
+          <id>C-1</id>
+          <area>7396</area>
+        </parcel>
+      </parcels>
+    </land>
+    <notes>
+      <note>Easement present.</note>
+    </notes>
+  </PROPERTY>
+  <PROPERTY xlink:label="PROPERTY_RENT_COMP1" ValuationUseType="RentalComparable">
+    <rental>
+      <unitType>3BHK</unitType>
+      <monthlyRent>2789</monthlyRent>
+    </rental>
+  </PROPERTY>
+  <PROPERTY xlink:label="PROPERTY_RENT_COMP2" ValuationUseType="RentalComparable">
+    <rental>
+      <unitType>1BHK</unitType>
+      <monthlyRent>2046</monthlyRent>
+    </rental>
+  </PROPERTY>
+  <PROPERTY xlink:label="PROPERTY_RENT_COMP3" ValuationUseType="RentalComparable">
+    <rental>
+      <unitType>2BHK</unitType>
+      <monthlyRent>2704</monthlyRent>
+    </rental>
+  </PROPERTY>
+</REPORT>
