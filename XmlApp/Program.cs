@@ -32,7 +32,8 @@ class Program
         var outputDir = Path.Combine(projectRoot, "output");
         Directory.CreateDirectory(outputDir);
 
-        bool doExtract = false, doReorder = false, doFindDuplicates = false;
+        bool doExtract = false, doReorder = false, doFindDuplicates = false, doFilter = false; ;
+
 
         if (args.Length > 0)
         {
@@ -42,23 +43,23 @@ class Program
                     doExtract = true;
                 if (arg.Equals("reorder", StringComparison.OrdinalIgnoreCase))
                     doReorder = true;
-                if (arg.Equals("duplicates", StringComparison.OrdinalIgnoreCase))
-                    doFindDuplicates = true;
+                if (arg.Equals("filter", StringComparison.OrdinalIgnoreCase))
+                    doFilter = true;
             }
         }
         else
         {
             Console.WriteLine("Choose operation:");
-            Console.WriteLine("1. extract      (generate ordered leaf-path files from xmls/)");
-            Console.WriteLine("2. reorder      (reorder mapping files in mapping/ using ordered-xpaths.txt)");
-            Console.WriteLine("3. both extract & reorder");
-            Console.WriteLine("4. find-duplicates  (find duplicate mappings in mapping/)");
+            Console.WriteLine("1. extract");
+            Console.WriteLine("2. reorder");
+            Console.WriteLine("3. both");
+            Console.WriteLine("4. filter  (group mapping by ValuationUseType/index with comments)");
             Console.Write("Enter 1, 2, 3, or 4: ");
             var choice = Console.ReadLine();
             if (choice == "1") doExtract = true;
             else if (choice == "2") doReorder = true;
             else if (choice == "3") { doExtract = doReorder = true; }
-            else if (choice == "4") doFindDuplicates = true;
+            else if (choice == "4") doFilter = true;
             else
             {
                 Console.WriteLine("Invalid choice. Exiting.");
@@ -70,10 +71,11 @@ class Program
             ExtractLeafPaths(xmlDir, outputDir);
 
         if (doReorder)
-            ReorderMappings(mappingDir, xmlDir, outputDir);
+            if (doReorder)
+                ReorderMappings(mappingDir, xmlDir, outputDir);
 
-        if (doFindDuplicates)
-            FindDuplicateMappings(mappingDir, outputDir);
+        if (doFilter)
+            FilterMappings(mappingDir, outputDir);
 
         Console.WriteLine("Done.");
     }
@@ -328,4 +330,147 @@ class Program
             }
         }
     }
+
+    // Filter mapping files by ValuationUseType and index, output XML with comments
+    static void FilterMappings(string mappingDir, string outputDir)
+    {
+        if (!Directory.Exists(mappingDir))
+        {
+            Console.WriteLine($"[Filter] mapping directory not found: {mappingDir}");
+            return;
+        }
+
+        var mappingFiles = Directory.GetFiles(mappingDir, "*.xml");
+        if (mappingFiles.Length == 0)
+        {
+            Console.WriteLine($"[Filter] No mapping XML files found in {mappingDir}");
+            return;
+        }
+
+        // Regex to extract ValuationUseType and optional index from XPath:
+        // matches PROPERTY[@ValuationUseType='Type'][index] or PROPERTY[@ValuationUseType='Type']
+        var rx = new Regex(@"PROPERTY\[@ValuationUseType='(?<type>[^']+)'\](?:\[(?<idx>\d+)\])?", RegexOptions.Compiled);
+
+        foreach (var mappingFile in mappingFiles)
+        {
+            Console.WriteLine($"[Filter] Processing mapping {Path.GetFileName(mappingFile)}...");
+            XDocument mappingsDoc;
+            try { mappingsDoc = XDocument.Load(mappingFile); }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"  Failed to load mapping XML: {ex.Message}");
+                continue;
+            }
+
+            var commonElements = mappingsDoc.Root.Elements("common").ToList();
+            if (!commonElements.Any())
+            {
+                Console.WriteLine("  No <common> elements found.");
+                continue;
+            }
+
+            // Build grouping: type -> index -> list of <common> elements
+            var typeGroups = new Dictionary<string, Dictionary<int, List<XElement>>>(StringComparer.OrdinalIgnoreCase);
+            var otherList = new List<XElement>();
+
+            foreach (var el in commonElements)
+            {
+                var xpathEl = el.Element("UAD_Xpath");
+                if (xpathEl == null)
+                {
+                    otherList.Add(el);
+                    continue;
+                }
+                var raw = xpathEl.Value.Trim();
+                var m = rx.Match(raw);
+                if (m.Success)
+                {
+                    var type = m.Groups["type"].Value; // e.g. "SalesComparable"
+                    int idx = 1;
+                    if (m.Groups["idx"].Success && int.TryParse(m.Groups["idx"].Value, out var parsed))
+                        idx = parsed;
+                    if (!typeGroups.TryGetValue(type, out var idxDict))
+                    {
+                        idxDict = new Dictionary<int, List<XElement>>();
+                        typeGroups[type] = idxDict;
+                    }
+                    if (!idxDict.TryGetValue(idx, out var list))
+                    {
+                        list = new List<XElement>();
+                        idxDict[idx] = list;
+                    }
+                    list.Add(el);
+                }
+                else
+                {
+                    // No PROPERTY[@ValuationUseType=...] in XPath
+                    otherList.Add(el);
+                }
+            }
+
+            // Build new XML with comments
+            var newRoot = new XElement(mappingsDoc.Root.Name);
+
+            // 1. SubjectProperty first, no index
+            if (typeGroups.TryGetValue("SubjectProperty", out var subjDict))
+            {
+                newRoot.Add(new XComment("Mappings for SubjectProperty"));
+                if (subjDict.TryGetValue(1, out var subjList))
+                {
+                    foreach (var el in subjList)
+                        newRoot.Add(new XElement(el)); // clone
+                }
+                typeGroups.Remove("SubjectProperty");
+            }
+
+            // 2. Other types that have multiple indices: handle in a fixed order if desired,
+            //    e.g. SalesComparable, LandComparable, RentalComparable
+            string[] orderedTypes = { "SalesComparable", "LandComparable", "RentalComparable" };
+            foreach (var t in orderedTypes)
+            {
+                if (typeGroups.TryGetValue(t, out var idxDict))
+                {
+                    // For each index in ascending order
+                    var sortedIdx = idxDict.Keys.OrderBy(i => i);
+                    foreach (var idx in sortedIdx)
+                    {
+                        newRoot.Add(new XComment($"Mappings for {t} [{idx}]"));
+                        foreach (var el in idxDict[idx])
+                            newRoot.Add(new XElement(el));
+                    }
+                    typeGroups.Remove(t);
+                }
+            }
+
+            // 3. Any remaining types (unexpected ValuationUseType)
+            foreach (var kv in typeGroups)
+            {
+                var t = kv.Key;
+                var idxDict = kv.Value;
+                var sortedIdx = idxDict.Keys.OrderBy(i => i);
+                foreach (var idx in sortedIdx)
+                {
+                    newRoot.Add(new XComment($"Mappings for {t} [{idx}]"));
+                    foreach (var el in idxDict[idx])
+                        newRoot.Add(new XElement(el));
+                }
+            }
+
+            // 4. Finally, any <common> elements without ValuationUseType in XPath
+            if (otherList.Any())
+            {
+                newRoot.Add(new XComment("Mappings with no ValuationUseType predicate or unmatched"));
+                foreach (var el in otherList)
+                    newRoot.Add(new XElement(el));
+            }
+
+            // Save to output: e.g. filter-<originalFileName>
+            var outFileName = "filter-" + Path.GetFileName(mappingFile);
+            var outPath = Path.Combine(outputDir, outFileName);
+            var outDoc = new XDocument(newRoot);
+            outDoc.Save(outPath);
+            Console.WriteLine($"  Filtered mapping saved to {outFileName}");
+        }
+    }
+
 }
