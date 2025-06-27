@@ -32,7 +32,8 @@ class Program
         var outputDir = Path.Combine(projectRoot, "output");
         Directory.CreateDirectory(outputDir);
 
-        bool doExtract = false, doReorder = false, doFindDuplicates = false, doFilter = false; ;
+        bool doExtract = false, doReorder = false, doFindDuplicates = false, doFilter = false; bool doRemoveACITagDuplicates = false;
+        
 
 
         if (args.Length > 0)
@@ -54,12 +55,14 @@ class Program
             Console.WriteLine("2. reorder");
             Console.WriteLine("3. both");
             Console.WriteLine("4. filter  (group mapping by ValuationUseType/index with comments)");
-            Console.Write("Enter 1, 2, 3, or 4: ");
+            Console.WriteLine("5. dedup-acitag  (remove duplicate mappings based on ACI_Tag, keep first)");
+            Console.Write("Enter 1, 2, 3, or 4 , 5: ");
             var choice = Console.ReadLine();
             if (choice == "1") doExtract = true;
             else if (choice == "2") doReorder = true;
             else if (choice == "3") { doExtract = doReorder = true; }
             else if (choice == "4") doFilter = true;
+            else if (choice == "5") doRemoveACITagDuplicates = true;
             else
             {
                 Console.WriteLine("Invalid choice. Exiting.");
@@ -76,6 +79,10 @@ class Program
 
         if (doFilter)
             FilterMappings(mappingDir, outputDir);
+
+        if (doRemoveACITagDuplicates)
+            RemoveACITagDuplicates(mappingDir, outputDir);
+
 
         Console.WriteLine("Done.");
     }
@@ -470,6 +477,35 @@ class Program
             var outDoc = new XDocument(newRoot);
             outDoc.Save(outPath);
             Console.WriteLine($"  Filtered mapping saved to {outFileName}");
+        }
+    }
+
+    static void RemoveACITagDuplicates(string mappingDir, string outputDir)
+    {
+        Console.WriteLine("[Dedup] Removing duplicates based on ACI_Tag...");
+
+        foreach (var mapFile in Directory.GetFiles(mappingDir, "*.xml"))
+        {
+            var doc = XDocument.Load(mapFile);
+            var commons = doc.Root.Elements("common").ToList();
+
+            var seenTags = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var uniqueCommons = new List<XElement>();
+
+            foreach (var c in commons)
+            {
+                var tag = c.Element("ACI_Tag")?.Value?.Trim();
+                if (string.IsNullOrEmpty(tag))
+                    continue;
+
+                if (seenTags.Add(tag)) // only add if not already seen
+                    uniqueCommons.Add(c);
+            }
+
+            var newRoot = new XElement(doc.Root.Name, uniqueCommons);
+            var outPath = Path.Combine(outputDir, "dedup-acitag-" + Path.GetFileName(mapFile));
+            new XDocument(newRoot).Save(outPath);
+            Console.WriteLine($"  Deduplicated → {Path.GetFileName(outPath)}");
         }
     }
 
